@@ -2,7 +2,9 @@
 
 A man going through a rough patch decides to spice up his life by responding to a job offer unlike any other.
 
-This short interactive fiction was crafted for the Spicy KAJAM2022. 25 questions, as many fun facts and 4 endings for a journey down in the burrow. Have fun in the Beaver Company !
+This short interactive fiction was crafted by Isaac Pante for the Spicy KAJAM2022. 25 questions, as many fun facts and 4 endings for a journey down in the burrow. Have fun in the Beaver Company !
+
+![alt text](https://github.com/isaacpante/the-spicy-interview/blob/main/assets/images/illustration.png?raw=true)
 
 ## Credits
 
@@ -16,7 +18,6 @@ All fun facts are from the following pages.
 -  [Le castor - l'ingénieur de la rivière](https://www.youtube.com/watch?
    v=6d1JVUVcLNs)
 -  [8 Fascinating Things to Know About Beavers](https://www.treehugger.com/beavers-things-know-about-natures-landscape-engineers-4863345)
--  []()
 
 ### Assets
 
