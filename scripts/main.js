@@ -11,6 +11,7 @@ loadSprite("castor0", "/assets/images/castor0.png");
 loadSprite("castor1", "/assets/images/castor1.png");
 loadSprite("castor2", "/assets/images/castor2.png");
 loadSprite("castor3", "/assets/images/castor3.png");
+loadSprite("fond", "/assets/images/background.jpg");
 loadSprite("f1", "/assets/images/f1.jpg");
 loadSprite("f2", "/assets/images/f2.jpg");
 loadSprite("f3", "/assets/images/f3.jpg");
