@@ -274,10 +274,12 @@ scene("interview", () => {
             } else {
                nombreAutorise = true;
                fondHumain();
-               texte.text = `
-                   [1] ${interviews[progressionItw].rh1}
-                   [2] ${interviews[progressionItw].rh2}
-                `;
+               texte.text =
+                  "[1]" +
+                  interviews[progressionItw].rh1 +
+                  "\n" +
+                  "[2]" +
+                  interviews[progressionItw].rh2;
                fond.color.r += 2;
             }
          }

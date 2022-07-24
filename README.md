@@ -4,11 +4,15 @@ A man going through a rough patch decides to spice up his life by responding to 
 
 This short interactive fiction was crafted by Isaac Pante for the Spicy KAJAM2022. 25 questions, as many fun facts and 4 endings for a journey down in the burrow. Have fun in the Beaver Company !
 
-![alt text](https://github.com/isaacpante/the-spicy-interview/blob/main/assets/images/illustration.png?raw=true)
+PS : play in the preview or with a 80% zoom in fullscreen. Chrome ftw !
+
+## Awards
+
+-  [The Most Hilarious Award (5000$, Kajam22)](https://youtu.be/Pt6dph3BPJM?t=1891)
 
 ## Credits
 
-### Références
+### References
 
 All fun facts are from the following pages.
 
@@ -21,13 +25,18 @@ All fun facts are from the following pages.
 
 ### Assets
 
--  Bruits de castor : https://www.videvo.net/sound-effect/beaver-movement-calls-fro-aps10605/235891/
--  Déception humaine 1 : https://freesound.org/people/nekomimi07/sounds/411022/
--  Déception humaine 2 : https://freesound.org/people/Larakaa/sounds/503498/
--  Image de castor : copyright Isaac Pante
--  Bruits de forêt : https://opengameart.org/content/forest-ambience
--  Musique d'introduction : https://opengameart.org/content/forest-2
--  Employé : https://opengameart.org/content/pixelated-employee-character
--  Bruit de feuilles : https://opengameart.org/content/20-rustles-dry-leaves
--  Musique début : https://opengameart.org/content/forest-1
--  Images de fins : copyright Isaac Pante
+#### Images
+
+-  Employee : https://opengameart.org/content/pixelated-employee-character
+-  Beaver drawings : Isaac Pante
+-  Ending pictures : Isaac Pante & Disco Diffusion
+
+#### Audio
+
+-  Beaver sounds : https://www.videvo.net/sound-effect/beaver-movement-calls-fro-aps10605/235891/
+-  Sound of leaves : https://opengameart.org/content/20-rustles-dry-leaves
+-  Intro music 1 : https://opengameart.org/content/forest-2
+-  Intro music 2 : https://opengameart.org/content/forest-1
+-  Hurted human 1 : https://freesound.org/people/nekomimi07/sounds/411022/
+-  Hurted human 2 : https://freesound.org/people/Larakaa/sounds/503498/
+-  Forest sounds : https://opengameart.org/content/forest-ambience
