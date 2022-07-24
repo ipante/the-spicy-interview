@@ -8,7 +8,7 @@ PS : play in the preview or with a 80% zoom in fullscreen. Chrome ftw !
 
 ## Awards
 
--  [The Most Hilarious Award (5000$, Kajam22)](https://youtu.be/Pt6dph3BPJM?t=1891)
+-  [Most Hilarious Award (5000$, Kajam22)](https://youtu.be/Pt6dph3BPJM?t=1891)
 
 ## Credits
 
@@ -19,8 +19,7 @@ All fun facts are from the following pages.
 -  [ProNatura](https://www.pronatura.ch/fr/dico-castor)
 -  [Castor et homme](http://www.castorethomme.org/)
 -  [ManimalWorld.net](https://www.manimalworld.net/pages/castoridae/castor.html)
--  [Le castor - l'ingénieur de la rivière](https://www.youtube.com/watch?
-   v=6d1JVUVcLNs)
+-  [Le castor - l'ingénieur de la rivière](https://www.youtube.com/watch?v=6d1JVUVcLNs)
 -  [8 Fascinating Things to Know About Beavers](https://www.treehugger.com/beavers-things-know-about-natures-landscape-engineers-4863345)
 
 ### Assets
