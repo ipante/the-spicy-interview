@@ -5,9 +5,13 @@ kaboom({
    background: [0, 0, 0],
 });
 
+// chargement des images
 loadSprite("employe", "/assets/images/employe.png");
-loadSprite("castor", "/assets/images/castor.png");
-loadSprite("fond", "/assets/images/background.jpg");
+loadSprite("castor0", "/assets/images/castor0.png");
+loadSprite("castor1", "/assets/images/castor1.png");
+loadSprite("castor2", "/assets/images/castor2.png");
+loadSprite("castor3", "/assets/images/castor3.png");
+loadSprite("fond", "/assets/images/fond.png");
 loadSprite("f1", "/assets/images/f1.jpg");
 loadSprite("f2", "/assets/images/f2.jpg");
 loadSprite("f3", "/assets/images/f3.jpg");
@@ -45,7 +49,7 @@ nettoyer(tableauSucces);
 nettoyer(tableauFins);
 
 // nombre de questions
-const nombreQuestions = 3;
+const nombreQuestions = 8;
 
 // variables globales
 let bulle, castor, perso, texte, fond;
@@ -141,7 +145,7 @@ scene("jeu", () => {
    ]);
 
    castor = add([
-      sprite("castor"),
+      sprite(`castor${randi(0, 4)}`),
       pos(width() * 0.7, height() - 440),
       layer("zoneDeJeu"),
       scale(9),
