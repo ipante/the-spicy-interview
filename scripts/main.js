@@ -33,6 +33,7 @@ layers(["fond", "zoneDeJeu", "interface"], "zoneDeJeu");
 // importation du localStorage
 if (localStorage.getItem("tableauSucces") === null) {
    localStorage.setItem("tableauSucces", "");
+   console.log("TS VIDE");
 }
 
 // importation du localStorage
@@ -71,18 +72,23 @@ let scoreConfiance;
 const scorePosteMax = 10;
 const scoreConfianceMax = 10;
 
-// sélectionner les questions
-interviews = selectionnerQuestions(nombreQuestions);
-
 scene("accueil", () => {
    if (langueChoisie == "fr") {
       textesIntroduction = textesIntroductionFR;
       rencontreCastor = rencontreCastorFR;
    }
 
+   // sélectionner les questions
+   interviews = selectionnerQuestions(nombreQuestions);
+
    onKeyPress("c", () => {
       localStorage.removeItem("tableauSucces");
       localStorage.removeItem("tableauFins");
+      console.log("TS :", localStorage.getItem("tableauSucces"));
+   });
+
+   onKeyPress("t", () => {
+      console.log("TS :", localStorage.getItem("tableauSucces"));
    });
 
    if (localStorage.tableauSucces != null) {
@@ -366,12 +372,12 @@ scene("fin", () => {
          nomFin = "1";
       } else {
          fin = ppen;
-         nomFin = "2";
+         nomFin = "3";
       }
    } else {
       if (scoreConfiance < scoreConfianceMax / 2) {
          fin = pnep;
-         nomFin = "3";
+         nomFin = "2";
       } else {
          fin = ppep;
          nomFin = "4";
