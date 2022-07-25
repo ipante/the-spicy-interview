@@ -73,13 +73,9 @@ const scorePosteMax = 10;
 const scoreConfianceMax = 10;
 
 scene("accueil", () => {
-   if (langueChoisie == "fr") {
-      textesIntroduction = textesIntroductionFR;
-      rencontreCastor = rencontreCastorFR;
-   }
-
    // sélectionner les questions
    interviews = selectionnerQuestions(nombreQuestions);
+   console.log("interviews", interviews);
 
    onKeyPress("c", () => {
       localStorage.removeItem("tableauSucces");
