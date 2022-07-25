@@ -200,7 +200,7 @@ scene("interview", () => {
       if (nombreAutorise) {
          // mise à jour du tableau de faits & localStorage
          tableauSucces.push(interviews[progressionItw].idFact);
-
+         console.log("tsts", tableauSucces);
          localStorage.tableauSucces = String(tableauSucces);
 
          texte.text = interviews[progressionItw].rc1;
@@ -611,8 +611,12 @@ function reactions(sc, sp) {
 function nettoyer(tab) {
    // enlever les vides
    tab.forEach((v, i) => {
-      if (v == "" || v == ",") {
+      // enlever le fausse valeurs
+      if (v == "" || v == "," || v == undefined) {
          tab.splice(i, 1);
+      } else {
+         // convertir en nombre
+         tab[i] = Number(v);
       }
    });
 }
