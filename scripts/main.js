@@ -6,6 +6,8 @@ kaboom({
 });
 
 // chargement des images
+loadSprite("drapeauEN", "/assets/images/drapeauEN.png");
+loadSprite("drapeauFR", "/assets/images/drapeauFR.png");
 loadSprite("employe", "/assets/images/employe.png");
 loadSprite("castor0", "/assets/images/castor0.png");
 loadSprite("castor1", "/assets/images/castor1.png");
@@ -72,10 +74,47 @@ let scoreConfiance;
 const scorePosteMax = 10;
 const scoreConfianceMax = 10;
 
+scene("selectionLangue", () => {
+   add([
+      sprite("drapeauEN"),
+      pos(width() / 2 - 200, height() / 2),
+      origin("center"),
+      scale(0.75),
+   ]);
+
+   add([
+      text("[1]"),
+      pos(width() / 2 - 200, height() / 2 + 200),
+      origin("center"),
+   ]);
+
+   add([
+      sprite("drapeauFR"),
+      pos(width() / 2 + 200, height() / 2),
+      origin("center"),
+      scale(0.75),
+   ]);
+
+   add([
+      text("[2]"),
+      pos(width() / 2 + 200, height() / 2 + 200),
+      origin("center"),
+   ]);
+
+   onKeyPress("1", () => {
+      langueChoisie = eval("textes_en");
+      go("accueil");
+   });
+   onKeyPress("2", () => {
+      langueChoisie = eval("textes_fr");
+      go("accueil");
+   });
+});
+
 scene("accueil", () => {
    // sélectionner les questions
-   interviews = selectionnerQuestions(nombreQuestions);
-   console.log("interviews", interviews);
+   console.log("texte itw.", langueChoisie.interviews);
+   langueChoisie.interviews = selectionnerQuestions(nombreQuestions);
 
    onKeyPress("c", () => {
       localStorage.removeItem("tableauSucces");
@@ -99,7 +138,7 @@ scene("accueil", () => {
       origin("center"),
    ]);
    let texte = add([
-      text("Press SpaceBar", { size: 32, width: width() - 230 }),
+      text(langueChoisie.commandeEspace, { size: 32, width: width() - 230 }),
       pos(width() / 2, height() / 2),
       origin("center"),
    ]);
@@ -108,8 +147,8 @@ scene("accueil", () => {
       if (compteur == 0) {
          destroy(titre);
       }
-      if (compteur != textesIntroduction.length) {
-         texte.text = textesIntroduction[compteur];
+      if (compteur != langueChoisie.textesIntroduction.length) {
+         texte.text = langueChoisie.textesIntroduction[compteur];
          if (compteur == 0) {
             m = play("etrangeForet");
          }
@@ -175,13 +214,13 @@ scene("jeu", () => {
    console.log("texte", texte);
 
    onKeyPress("space", () => {
-      if (progression != rencontreCastor.length) {
+      if (progression != langueChoisie.rencontreCastor.length) {
          if (progression == 5) {
             play("feuilles");
             shake(2);
             castor.opacity = 1;
          }
-         texte.text = rencontreCastor[progression];
+         texte.text = langueChoisie.rencontreCastor[progression];
          progression++;
       } else {
          go("interview");
@@ -195,24 +234,24 @@ scene("interview", () => {
    onKeyPress("1", () => {
       if (nombreAutorise) {
          // mise à jour du tableau de faits & localStorage
-         tableauSucces.push(interviews[progressionItw].idFact);
+         tableauSucces.push(langueChoisie.interviews[progressionItw].idFact);
          console.log("tsts", tableauSucces);
          localStorage.tableauSucces = String(tableauSucces);
 
-         texte.text = interviews[progressionItw].rc1;
+         texte.text = langueChoisie.interviews[progressionItw].rc1;
          fondCastor();
 
          espaceAutorise = true;
          questionPasPosee = true;
 
-         if (progressionItw - 1 == interviews.length) {
+         if (progressionItw - 1 == langueChoisie.interviews.length) {
             go("bilan");
             return;
          }
          nombreAutorise = false;
 
-         let sc = interviews[progressionItw].sc1;
-         let sp = interviews[progressionItw].sp1;
+         let sc = langueChoisie.interviews[progressionItw].sc1;
+         let sp = langueChoisie.interviews[progressionItw].sp1;
 
          reactions(sc, sp);
 
@@ -233,31 +272,31 @@ scene("interview", () => {
    onKeyPress("2", () => {
       if (nombreAutorise) {
          // mise à jour du tableau de faits & localStorage
-         tableauSucces.push(interviews[progressionItw].idFact);
+         tableauSucces.push(langueChoisie.interviews[progressionItw].idFact);
          localStorage.tableauSucces = String(tableauSucces);
 
-         texte.text = interviews[progressionItw].rc2;
+         texte.text = langueChoisie.interviews[progressionItw].rc2;
          fondCastor();
 
          espaceAutorise = true;
          questionPasPosee = true;
 
-         if (progressionItw == interviews.length) {
+         if (progressionItw == langueChoisie.interviews.length) {
             go("bilan");
             return;
          }
          nombreAutorise = false;
 
-         let sc = interviews[progressionItw].sc2;
-         let sp = interviews[progressionItw].sp2;
+         let sc = langueChoisie.interviews[progressionItw].sc2;
+         let sp = langueChoisie.interviews[progressionItw].sp2;
 
          reactions(sc, sp);
 
          scoreConfiance += sc;
          scorePoste += sp;
 
-         scoreConfiance += interviews[progressionItw].sc2;
-         scorePoste += interviews[progressionItw].sp2;
+         scoreConfiance += langueChoisie.interviews[progressionItw].sc2;
+         scorePoste += langueChoisie.interviews[progressionItw].sp2;
 
          if (jaugesOK) {
             recalculerJauges(
@@ -271,7 +310,7 @@ scene("interview", () => {
       }
    });
    onKeyPress("space", () => {
-      if (progressionItw == interviews.length) {
+      if (progressionItw == langueChoisie.interviews.length) {
          go("bilan");
       } else {
          if (espaceAutorise) {
@@ -282,10 +321,10 @@ scene("interview", () => {
                fondHumain();
                texte.text =
                   "[1]" +
-                  interviews[progressionItw].rh1 +
+                  langueChoisie.interviews[progressionItw].rh1 +
                   "\n" +
                   "[2]" +
-                  interviews[progressionItw].rh2;
+                  langueChoisie.interviews[progressionItw].rh2;
                fond.color.r += 2;
             }
          }
@@ -304,7 +343,7 @@ scene("interview", () => {
          );
          jaugesOK = true;
       }
-      texte.text = interviews[progressionItw].q;
+      texte.text = langueChoisie.interviews[progressionItw].q;
       espaceAutorise = true;
       fondCastor();
       questionPasPosee = false;
@@ -322,8 +361,8 @@ scene("bilan", () => {
 
    let monologueFinal;
    scorePoste > scorePosteMax / 2 + 1
-      ? (monologueFinal = engage)
-      : (monologueFinal = recale);
+      ? (monologueFinal = langueChoisie.engage)
+      : (monologueFinal = langueChoisie.recale);
 
    fondCastor();
 
@@ -364,18 +403,18 @@ scene("fin", () => {
 
    if (scorePoste < scorePosteMax / 2) {
       if (scoreConfiance < scoreConfianceMax / 2) {
-         fin = pnen;
+         fin = langueChoisie.pnen;
          nomFin = "1";
       } else {
-         fin = ppen;
+         fin = langueChoisie.ppen;
          nomFin = "3";
       }
    } else {
       if (scoreConfiance < scoreConfianceMax / 2) {
-         fin = pnep;
+         fin = langueChoisie.pnep;
          nomFin = "2";
       } else {
-         fin = ppep;
+         fin = langueChoisie.ppep;
          nomFin = "4";
       }
    }
@@ -460,7 +499,7 @@ function ajouterInterfaceItw() {
    ]);
 
    const foiJ = add([
-      text("FAITH IN YOURSELF", { size: 28 }),
+      text(langueChoisie.confianceEnSoiITF, { size: 28 }),
       pos(jaugeConfiance.pos.x, jaugeConfiance.pos.y + 5),
       layer("interface"),
       stay(),
@@ -487,7 +526,7 @@ function ajouterInterfaceItw() {
    ]);
 
    const foiC = add([
-      text("TRUST IN APPLICANT", { size: 28 }),
+      text(langueChoisie.confianceEnCandidatITF, { size: 28 }),
       pos(jaugePoste.pos.x, jaugePoste.pos.y + 5),
       layer("interface"),
       stay(),
@@ -498,7 +537,7 @@ function ajouterInterfaceItw() {
 // composer le tableau de questions
 function selectionnerQuestions(nombreQuestions) {
    // copier le tableau
-   let tmp = interviews.slice(interviews);
+   let tmp = langueChoisie.interviews.slice(langueChoisie.interviews);
    let selectionQuestions = [];
 
    for (let i = 0; i < nombreQuestions; i++) {
@@ -507,7 +546,7 @@ function selectionnerQuestions(nombreQuestions) {
       selectionQuestions.push(removed[0]);
    }
    // ajouter la première question
-   selectionQuestions.unshift(questionInitiale);
+   selectionQuestions.unshift(langueChoisie.questionInitiale);
    return selectionQuestions;
 }
 
@@ -579,7 +618,7 @@ function creerGrilleFaits() {
 
    onHover("bloc", (b) => {
       if (b.color.g == 255) {
-         modal.text = faits[b.idFait];
+         modal.text = langueChoisie.faits[b.idFait];
       }
    });
 }
@@ -617,4 +656,4 @@ function nettoyer(tab) {
    });
 }
 
-go("accueil");
+go("selectionLangue");
