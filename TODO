@@ -1,4 +1,20 @@
+# ROADMAP
+
+## préparation
+
+- diff ReplIt-Github
+
+## fix
+
 -  localStorage
    -  comprendre pourquoi il tire les mêmes valeurs
 -  fix size
 -  double musique au restart
+- optimisation GC
+
+## bonus
+
+- test PixelArt SD
+- niveau ours
+- niveau humain
+- achievments
