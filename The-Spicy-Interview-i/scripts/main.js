@@ -2,14 +2,11 @@ let scaleFactor = window.innerWidth / 1280;
 console.log("scaleFactor",window.innerWidth);
 
 kaboom({
-   width: 1280,
-  height : 720,
-   background: [0, 0, 0],
-  scale : scaleFactor
+  background: [0, 0, 0]
 });
 
 loadSprite("employe", "/assets/images/employe.png");
-loadSprite("castor", "/assets/images/castor.png");
+loadSprite("castor", "./assets/images/castor.png");
 loadSprite("fond", "/assets/images/background.jpg");
 loadSprite("f1", "/assets/images/f1.jpg");
 loadSprite("f2", "/assets/images/f2.jpg");
@@ -27,7 +24,7 @@ loadSound("castorDecu2", "/assets/audio/castorDecu2.m4a");
 loadSound("castorDecu3", "/assets/audio/castorDecu3.m4a");
 loadSound("succes", "/assets/audio/succes.ogg");
 
-layers(["fond", "zoneDeJeu", "interface"], "zoneDeJeu");
+//zs(["fond", "zoneDeJeu", "interface"], "zoneDeJeu");
 
 // importation du localStorage
 if (localStorage.getItem("tableauSucces") === null) {
@@ -93,12 +90,12 @@ scene("accueil", () => {
    let titre = add([
       text("THE SPICY INTERVIEW", { size: 50, width: width() - 230 }),
       pos(width() / 2, 100),
-      origin("center"),
+      anchor("center"),
    ]);
    let texte = add([
       text("Press SpaceBar", { size: 32, width: width() - 230 }),
       pos(width() / 2, height() / 2),
-      origin("center"),
+      anchor("center"),
    ]);
 
    onKeyPress("space", () => {
@@ -112,7 +109,7 @@ scene("accueil", () => {
          }
          compteur++;
       } else {
-         m.stop();
+         stop(m);
          go("jeu");
       }
    });
@@ -127,10 +124,10 @@ scene("jeu", () => {
    fond = add([
       sprite("fond"),
       pos(width() / 2, height() / 2),
-      layer("fond"),
+      z(1),
       scale(2.5),
       color(120, 70, 210),
-      origin("center"),
+      anchor("center"),
       stay(),
       "tout",
    ]);
@@ -138,7 +135,7 @@ scene("jeu", () => {
    perso = add([
       sprite("employe"),
       pos(10, height() - 700),
-      layer("zoneDeJeu"),
+      z(2),
       scale(22),
       stay(),
    ]);
@@ -146,7 +143,7 @@ scene("jeu", () => {
    castor = add([
       sprite("castor"),
       pos(width() * 0.7, height() - 440),
-      layer("zoneDeJeu"),
+      z(2),
       scale(9),
       opacity(0),
       stay(),
@@ -154,19 +151,19 @@ scene("jeu", () => {
 
    bulle = add([
       rect(width(), height() * 0.4),
-      origin("center"),
+      anchor("center"),
       color(120, 10, 0),
       pos(center().x, height() - 100),
       outline(2),
-      layer("interface"),
+      z(3),
       stay(),
    ]);
 
    texte = add([
       text("Hello ?", { size: 32, width: width() - 230 }),
       pos(bulle.pos),
-      origin("center"),
-      layer("interface"),
+      anchor("center"),
+      z(3),
       stay(),
    ]);
    console.log("texte", texte);
@@ -311,9 +308,9 @@ scene("interview", () => {
 
 // interview terminée : c'est l'heure du bilan
 scene("bilan", () => {
-   m.stop();
+   stop(m);
    let mef = play("etrangeForet");
-   every("itw", destroy);
+   destroyAll("itw")
    let compteurCastor = 0;
    let compteurHumain = 0;
 
@@ -333,7 +330,7 @@ scene("bilan", () => {
          destroy(castor);
          compteurCastor++;
       } else {
-         mef.stop();
+         stop(mef);
          go("fin");
       }
    });
@@ -356,7 +353,7 @@ scene("fin", () => {
    let texteFinal = add([
       text("", { size: 32, width: width() - 230 }),
       pos(width() / 2, height() / 2),
-      origin("center"),
+      anchor("center"),
    ]);
 
    if (scorePoste < scorePosteMax / 2) {
@@ -396,13 +393,13 @@ scene("fin", () => {
          let texteSucces = add([
             text(`ENDING ${nomFin}/4 UNLOCKED`, { size: 40 }),
             pos(width() / 2, 40),
-            origin("center"),
+            anchor("center"),
          ]);
 
          let imageFinale = add([
             sprite(`f${nomFin}`),
             pos(width() / 2, 400),
-            origin("center"),
+            anchor("center"),
          ]);
       } else {
          go("succes");
@@ -441,7 +438,7 @@ function ajouterInterfaceItw() {
       pos(jcPos),
       color(120, 0, 0),
       outline(4),
-      layer("interface"),
+      z("interface"),
       "itw",
       "jauge",
    ]);
@@ -451,7 +448,7 @@ function ajouterInterfaceItw() {
       pos(jcPos),
       color(0, 120, 120),
       outline(4),
-      layer("interface"),
+      z("interface"),
       "itw",
       "jauge",
    ]);
@@ -459,7 +456,7 @@ function ajouterInterfaceItw() {
    const foiJ = add([
       text("FAITH IN YOURSELF", { size: 28 }),
       pos(jaugeConfiance.pos.x, jaugeConfiance.pos.y + 5),
-      layer("interface"),
+      z("interface"),
       stay(),
       "itw",
    ]);
@@ -469,7 +466,7 @@ function ajouterInterfaceItw() {
       pos(jpPos),
       color(120, 0, 0),
       outline(4),
-      layer("interface"),
+      z("interface"),
       "itw",
    ]);
 
@@ -478,7 +475,7 @@ function ajouterInterfaceItw() {
       pos(jpPos),
       color(0, 120, 120),
       outline(4),
-      layer("interface"),
+      z("interface"),
       "itw",
       "jauge",
    ]);
@@ -486,7 +483,7 @@ function ajouterInterfaceItw() {
    const foiC = add([
       text("TRUST IN APPLICANT", { size: 28 }),
       pos(jaugePoste.pos.x, jaugePoste.pos.y + 5),
-      layer("interface"),
+      z("interface"),
       stay(),
       "itw",
    ]);
@@ -555,13 +552,17 @@ function creerGrilleFaits() {
             color(150, 160, 170),
             outline(2, 120, 255, 255),
             area(),
-            origin("center"),
-            layer("interface"),
+            anchor("center"),
+            z("interface"),
             "bloc",
             "grilleFaits",
             { idFait: i + j - 1 },
-            text(nombreFait, { size: 30 }),
          ]);
+
+         bloc.add([
+            text(nombreFait, { size: 30 })
+         ])
+
          if (tableauSucces.includes(nombreFait)) {
             bloc.color.r = 0;
             bloc.color.g = 255;
