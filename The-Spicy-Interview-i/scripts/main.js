@@ -8,23 +8,25 @@ kaboom({
 loadSprite("employe", "/assets/images/employe.png");
 loadSprite("castor", "./assets/images/castor.png");
 loadSprite("fond", "/assets/images/background.jpg");
+
 loadSprite("f1", "/assets/images/f1.jpg");
 loadSprite("f2", "/assets/images/f2.jpg");
 loadSprite("f3", "/assets/images/f3.jpg");
 loadSprite("f4", "/assets/images/f4.jpg");
 
 loadSound("feuilles", "/assets/audio/feuilles.flac");
+
 loadSound("sonsForet", "/assets/audio/Forest_Ambience.mp3");
-loadSound("musiqueDebut", "/assets/audio/musiqueForet.ogg");
 loadSound("etrangeForet", "/assets/audio/etrange_foret.mp3");
 loadSound("deception1", "/assets/audio/deception1.mp3");
 loadSound("deception2", "/assets/audio/deception2.mp3");
+
 loadSound("castorDecu1", "/assets/audio/castorDecu1.m4a");
 loadSound("castorDecu2", "/assets/audio/castorDecu2.m4a");
 loadSound("castorDecu3", "/assets/audio/castorDecu3.m4a");
-loadSound("succes", "/assets/audio/succes.ogg");
 
-//zs(["fond", "zoneDeJeu", "interface"], "zoneDeJeu");
+loadSound("musiqueDebut", "/assets/audio/musiqueForet.ogg");
+loadSound("succes", "/assets/audio/succes.ogg");
 
 // importation du localStorage
 if (localStorage.getItem("tableauSucces") === null) {
