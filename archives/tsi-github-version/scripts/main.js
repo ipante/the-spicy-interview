@@ -1,36 +1,41 @@
-let scaleFactor = window.innerWidth / 1280;
-console.log("scaleFactor",window.innerWidth);
-
 kaboom({
-  background: [0, 0, 0]
+   width: 1280,
+   height: 720,
+   fullscreen: true,
+   background: [0, 0, 0],
 });
 
+// chargement des images
+loadSprite("drapeauEN", "/assets/images/drapeauEN.png");
+loadSprite("drapeauFR", "/assets/images/drapeauFR.png");
 loadSprite("employe", "/assets/images/employe.png");
-loadSprite("castor", "./assets/images/castor.png");
+loadSprite("castor0", "/assets/images/castor0.png");
+loadSprite("castor1", "/assets/images/castor1.png");
+loadSprite("castor2", "/assets/images/castor2.png");
+loadSprite("castor3", "/assets/images/castor3.png");
 loadSprite("fond", "/assets/images/background.jpg");
-
 loadSprite("f1", "/assets/images/f1.jpg");
 loadSprite("f2", "/assets/images/f2.jpg");
 loadSprite("f3", "/assets/images/f3.jpg");
 loadSprite("f4", "/assets/images/f4.jpg");
 
 loadSound("feuilles", "/assets/audio/feuilles.flac");
-
 loadSound("sonsForet", "/assets/audio/Forest_Ambience.mp3");
+loadSound("musiqueDebut", "/assets/audio/musiqueForet.ogg");
 loadSound("etrangeForet", "/assets/audio/etrange_foret.mp3");
 loadSound("deception1", "/assets/audio/deception1.mp3");
 loadSound("deception2", "/assets/audio/deception2.mp3");
-
 loadSound("castorDecu1", "/assets/audio/castorDecu1.m4a");
 loadSound("castorDecu2", "/assets/audio/castorDecu2.m4a");
 loadSound("castorDecu3", "/assets/audio/castorDecu3.m4a");
-
-loadSound("musiqueDebut", "/assets/audio/musiqueForet.ogg");
 loadSound("succes", "/assets/audio/succes.ogg");
+
+layers(["fond", "zoneDeJeu", "interface"], "zoneDeJeu");
 
 // importation du localStorage
 if (localStorage.getItem("tableauSucces") === null) {
    localStorage.setItem("tableauSucces", "");
+   console.log("TS VIDE");
 }
 
 // importation du localStorage
@@ -69,18 +74,56 @@ let scoreConfiance;
 const scorePosteMax = 10;
 const scoreConfianceMax = 10;
 
-// sélectionner les questions
-interviews = selectionnerQuestions(nombreQuestions);
+scene("selectionLangue", () => {
+   add([
+      sprite("drapeauEN"),
+      pos(width() / 2 - 200, height() / 2),
+      origin("center"),
+      scale(0.75),
+   ]);
+
+   add([
+      text("[1]"),
+      pos(width() / 2 - 200, height() / 2 + 200),
+      origin("center"),
+   ]);
+
+   add([
+      sprite("drapeauFR"),
+      pos(width() / 2 + 200, height() / 2),
+      origin("center"),
+      scale(0.75),
+   ]);
+
+   add([
+      text("[2]"),
+      pos(width() / 2 + 200, height() / 2 + 200),
+      origin("center"),
+   ]);
+
+   onKeyPress("1", () => {
+      langueChoisie = eval("textes_en");
+      go("accueil");
+   });
+   onKeyPress("2", () => {
+      langueChoisie = eval("textes_fr");
+      go("accueil");
+   });
+});
 
 scene("accueil", () => {
-   if (langueChoisie == "fr") {
-      textesIntroduction = textesIntroductionFR;
-      rencontreCastor = rencontreCastorFR;
-   }
+   // sélectionner les questions
+   console.log("texte itw.", langueChoisie.interviews);
+   langueChoisie.interviews = selectionnerQuestions(nombreQuestions);
 
    onKeyPress("c", () => {
       localStorage.removeItem("tableauSucces");
       localStorage.removeItem("tableauFins");
+      console.log("TS :", localStorage.getItem("tableauSucces"));
+   });
+
+   onKeyPress("t", () => {
+      console.log("TS :", localStorage.getItem("tableauSucces"));
    });
 
    if (localStorage.tableauSucces != null) {
@@ -92,26 +135,26 @@ scene("accueil", () => {
    let titre = add([
       text("THE SPICY INTERVIEW", { size: 50, width: width() - 230 }),
       pos(width() / 2, 100),
-      anchor("center"),
+      origin("center"),
    ]);
    let texte = add([
-      text("Press SpaceBar", { size: 32, width: width() - 230 }),
+      text(langueChoisie.commandeEspace, { size: 32, width: width() - 230 }),
       pos(width() / 2, height() / 2),
-      anchor("center"),
+      origin("center"),
    ]);
 
    onKeyPress("space", () => {
       if (compteur == 0) {
          destroy(titre);
       }
-      if (compteur != textesIntroduction.length) {
-         texte.text = textesIntroduction[compteur];
+      if (compteur != langueChoisie.textesIntroduction.length) {
+         texte.text = langueChoisie.textesIntroduction[compteur];
          if (compteur == 0) {
             m = play("etrangeForet");
          }
          compteur++;
       } else {
-         stop(m);
+         m.stop();
          go("jeu");
       }
    });
@@ -126,10 +169,10 @@ scene("jeu", () => {
    fond = add([
       sprite("fond"),
       pos(width() / 2, height() / 2),
-      z(1),
+      layer("fond"),
       scale(2.5),
       color(120, 70, 210),
-      anchor("center"),
+      origin("center"),
       stay(),
       "tout",
    ]);
@@ -137,15 +180,15 @@ scene("jeu", () => {
    perso = add([
       sprite("employe"),
       pos(10, height() - 700),
-      z(2),
+      layer("zoneDeJeu"),
       scale(22),
       stay(),
    ]);
 
    castor = add([
-      sprite("castor"),
+      sprite(`castor${randi(0, 4)}`),
       pos(width() * 0.7, height() - 440),
-      z(2),
+      layer("zoneDeJeu"),
       scale(9),
       opacity(0),
       stay(),
@@ -153,31 +196,31 @@ scene("jeu", () => {
 
    bulle = add([
       rect(width(), height() * 0.4),
-      anchor("center"),
+      origin("center"),
       color(120, 10, 0),
       pos(center().x, height() - 100),
       outline(2),
-      z(3),
+      layer("interface"),
       stay(),
    ]);
 
    texte = add([
       text("Hello ?", { size: 32, width: width() - 230 }),
       pos(bulle.pos),
-      anchor("center"),
-      z(3),
+      origin("center"),
+      layer("interface"),
       stay(),
    ]);
    console.log("texte", texte);
 
    onKeyPress("space", () => {
-      if (progression != rencontreCastor.length) {
+      if (progression != langueChoisie.rencontreCastor.length) {
          if (progression == 5) {
             play("feuilles");
             shake(2);
             castor.opacity = 1;
          }
-         texte.text = rencontreCastor[progression];
+         texte.text = langueChoisie.rencontreCastor[progression];
          progression++;
       } else {
          go("interview");
@@ -191,24 +234,24 @@ scene("interview", () => {
    onKeyPress("1", () => {
       if (nombreAutorise) {
          // mise à jour du tableau de faits & localStorage
-         tableauSucces.push(interviews[progressionItw].idFact);
-
+         tableauSucces.push(langueChoisie.interviews[progressionItw].idFact);
+         console.log("tsts", tableauSucces);
          localStorage.tableauSucces = String(tableauSucces);
 
-         texte.text = interviews[progressionItw].rc1;
+         texte.text = langueChoisie.interviews[progressionItw].rc1;
          fondCastor();
 
          espaceAutorise = true;
          questionPasPosee = true;
 
-         if (progressionItw - 1 == interviews.length) {
+         if (progressionItw - 1 == langueChoisie.interviews.length) {
             go("bilan");
             return;
          }
          nombreAutorise = false;
 
-         let sc = interviews[progressionItw].sc1;
-         let sp = interviews[progressionItw].sp1;
+         let sc = langueChoisie.interviews[progressionItw].sc1;
+         let sp = langueChoisie.interviews[progressionItw].sp1;
 
          reactions(sc, sp);
 
@@ -229,31 +272,31 @@ scene("interview", () => {
    onKeyPress("2", () => {
       if (nombreAutorise) {
          // mise à jour du tableau de faits & localStorage
-         tableauSucces.push(interviews[progressionItw].idFact);
+         tableauSucces.push(langueChoisie.interviews[progressionItw].idFact);
          localStorage.tableauSucces = String(tableauSucces);
 
-         texte.text = interviews[progressionItw].rc2;
+         texte.text = langueChoisie.interviews[progressionItw].rc2;
          fondCastor();
 
          espaceAutorise = true;
          questionPasPosee = true;
 
-         if (progressionItw == interviews.length) {
+         if (progressionItw == langueChoisie.interviews.length) {
             go("bilan");
             return;
          }
          nombreAutorise = false;
 
-         let sc = interviews[progressionItw].sc2;
-         let sp = interviews[progressionItw].sp2;
+         let sc = langueChoisie.interviews[progressionItw].sc2;
+         let sp = langueChoisie.interviews[progressionItw].sp2;
 
          reactions(sc, sp);
 
          scoreConfiance += sc;
          scorePoste += sp;
 
-         scoreConfiance += interviews[progressionItw].sc2;
-         scorePoste += interviews[progressionItw].sp2;
+         scoreConfiance += langueChoisie.interviews[progressionItw].sc2;
+         scorePoste += langueChoisie.interviews[progressionItw].sp2;
 
          if (jaugesOK) {
             recalculerJauges(
@@ -267,7 +310,7 @@ scene("interview", () => {
       }
    });
    onKeyPress("space", () => {
-      if (progressionItw == interviews.length) {
+      if (progressionItw == langueChoisie.interviews.length) {
          go("bilan");
       } else {
          if (espaceAutorise) {
@@ -278,10 +321,10 @@ scene("interview", () => {
                fondHumain();
                texte.text =
                   "[1]" +
-                  interviews[progressionItw].rh1 +
+                  langueChoisie.interviews[progressionItw].rh1 +
                   "\n" +
                   "[2]" +
-                  interviews[progressionItw].rh2;
+                  langueChoisie.interviews[progressionItw].rh2;
                fond.color.r += 2;
             }
          }
@@ -300,7 +343,7 @@ scene("interview", () => {
          );
          jaugesOK = true;
       }
-      texte.text = interviews[progressionItw].q;
+      texte.text = langueChoisie.interviews[progressionItw].q;
       espaceAutorise = true;
       fondCastor();
       questionPasPosee = false;
@@ -310,16 +353,16 @@ scene("interview", () => {
 
 // interview terminée : c'est l'heure du bilan
 scene("bilan", () => {
-   stop(m);
+   m.stop();
    let mef = play("etrangeForet");
-   destroyAll("itw")
+   every("itw", destroy);
    let compteurCastor = 0;
    let compteurHumain = 0;
 
    let monologueFinal;
    scorePoste > scorePosteMax / 2 + 1
-      ? (monologueFinal = engage)
-      : (monologueFinal = recale);
+      ? (monologueFinal = langueChoisie.engage)
+      : (monologueFinal = langueChoisie.recale);
 
    fondCastor();
 
@@ -332,7 +375,7 @@ scene("bilan", () => {
          destroy(castor);
          compteurCastor++;
       } else {
-         stop(mef);
+         mef.stop();
          go("fin");
       }
    });
@@ -355,23 +398,23 @@ scene("fin", () => {
    let texteFinal = add([
       text("", { size: 32, width: width() - 230 }),
       pos(width() / 2, height() / 2),
-      anchor("center"),
+      origin("center"),
    ]);
 
    if (scorePoste < scorePosteMax / 2) {
       if (scoreConfiance < scoreConfianceMax / 2) {
-         fin = pnen;
+         fin = langueChoisie.pnen;
          nomFin = "1";
       } else {
-         fin = ppen;
-         nomFin = "2";
+         fin = langueChoisie.ppen;
+         nomFin = "3";
       }
    } else {
       if (scoreConfiance < scoreConfianceMax / 2) {
-         fin = pnep;
-         nomFin = "3";
+         fin = langueChoisie.pnep;
+         nomFin = "2";
       } else {
-         fin = ppep;
+         fin = langueChoisie.ppep;
          nomFin = "4";
       }
    }
@@ -395,13 +438,13 @@ scene("fin", () => {
          let texteSucces = add([
             text(`ENDING ${nomFin}/4 UNLOCKED`, { size: 40 }),
             pos(width() / 2, 40),
-            anchor("center"),
+            origin("center"),
          ]);
 
          let imageFinale = add([
             sprite(`f${nomFin}`),
             pos(width() / 2, 400),
-            anchor("center"),
+            origin("center"),
          ]);
       } else {
          go("succes");
@@ -440,7 +483,7 @@ function ajouterInterfaceItw() {
       pos(jcPos),
       color(120, 0, 0),
       outline(4),
-      z("interface"),
+      layer("interface"),
       "itw",
       "jauge",
    ]);
@@ -450,15 +493,15 @@ function ajouterInterfaceItw() {
       pos(jcPos),
       color(0, 120, 120),
       outline(4),
-      z("interface"),
+      layer("interface"),
       "itw",
       "jauge",
    ]);
 
    const foiJ = add([
-      text("FAITH IN YOURSELF", { size: 28 }),
+      text(langueChoisie.confianceEnSoiITF, { size: 28 }),
       pos(jaugeConfiance.pos.x, jaugeConfiance.pos.y + 5),
-      z("interface"),
+      layer("interface"),
       stay(),
       "itw",
    ]);
@@ -468,7 +511,7 @@ function ajouterInterfaceItw() {
       pos(jpPos),
       color(120, 0, 0),
       outline(4),
-      z("interface"),
+      layer("interface"),
       "itw",
    ]);
 
@@ -477,15 +520,15 @@ function ajouterInterfaceItw() {
       pos(jpPos),
       color(0, 120, 120),
       outline(4),
-      z("interface"),
+      layer("interface"),
       "itw",
       "jauge",
    ]);
 
    const foiC = add([
-      text("TRUST IN APPLICANT", { size: 28 }),
+      text(langueChoisie.confianceEnCandidatITF, { size: 28 }),
       pos(jaugePoste.pos.x, jaugePoste.pos.y + 5),
-      z("interface"),
+      layer("interface"),
       stay(),
       "itw",
    ]);
@@ -494,7 +537,7 @@ function ajouterInterfaceItw() {
 // composer le tableau de questions
 function selectionnerQuestions(nombreQuestions) {
    // copier le tableau
-   let tmp = interviews.slice(interviews);
+   let tmp = langueChoisie.interviews.slice(langueChoisie.interviews);
    let selectionQuestions = [];
 
    for (let i = 0; i < nombreQuestions; i++) {
@@ -503,7 +546,7 @@ function selectionnerQuestions(nombreQuestions) {
       selectionQuestions.push(removed[0]);
    }
    // ajouter la première question
-   selectionQuestions.unshift(questionInitiale);
+   selectionQuestions.unshift(langueChoisie.questionInitiale);
    return selectionQuestions;
 }
 
@@ -554,17 +597,13 @@ function creerGrilleFaits() {
             color(150, 160, 170),
             outline(2, 120, 255, 255),
             area(),
-            anchor("center"),
-            z("interface"),
+            origin("center"),
+            layer("interface"),
             "bloc",
             "grilleFaits",
             { idFait: i + j - 1 },
+            text(nombreFait, { size: 30 }),
          ]);
-
-         bloc.add([
-            text(nombreFait, { size: 30 })
-         ])
-
          if (tableauSucces.includes(nombreFait)) {
             bloc.color.r = 0;
             bloc.color.g = 255;
@@ -579,7 +618,7 @@ function creerGrilleFaits() {
 
    onHover("bloc", (b) => {
       if (b.color.g == 255) {
-         modal.text = faits[b.idFait];
+         modal.text = langueChoisie.faits[b.idFait];
       }
    });
 }
@@ -607,10 +646,14 @@ function reactions(sc, sp) {
 function nettoyer(tab) {
    // enlever les vides
    tab.forEach((v, i) => {
-      if (v == "" || v == ",") {
+      // enlever le fausse valeurs
+      if (v == "" || v == "," || v == undefined) {
          tab.splice(i, 1);
+      } else {
+         // convertir en nombre
+         tab[i] = Number(v);
       }
    });
 }
 
-go("accueil");
+go("selectionLangue");
