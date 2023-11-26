@@ -1,32 +1,45 @@
-// let scaleFactor = window.innerWidth / 1280;
-// console.log("scaleFactor",window.innerWidth);
+let scaleFactor = window.innerWidth / 1280;
 
-kaboom({
-  background: [0, 0, 0]
+let k = kaboom({
+  background: [0, 0, 0],
+  width : 1280,
+  height : 720,
+  letterbox : true,
+  scale : scaleFactor
 });
 
-loadSprite("employe", "/assets/images/employe.png");
-loadSprite("castor", "./assets/images/castor.png");
-loadSprite("fond", "/assets/images/background.jpg");
+const liste_assets = [
+   {type : "image", nom : "employe", extension : "png"},
+   {type : "image", nom : "castor", extension : "png"},
+   {type : "image", nom : "fond", extension : "jpg"},
+   {type : "image", nom : "f1", extension : "jpg"},
+   {type : "image", nom : "f2", extension : "jpg"},
+   {type : "image", nom : "f3", extension : "jpg"},
+   {type : "image", nom : "f4", extension : "jpg"},
+   {type : "audio", nom : "feuilles", extension : "flac"},
+   {type : "audio", nom : "sonsForet", extension : "mp3"},
+   {type : "audio", nom : "etrangeForet", extension : "mp3"},
+   {type : "audio", nom : "deception1", extension : "mp3"},
+   {type : "audio", nom : "deception2", extension : "mp3"},
+   {type : "audio", nom : "castorDecu1", extension : "m4a"},
+   {type : "audio", nom : "castorDecu2", extension : "m4a"},
+   {type : "audio", nom : "castorDecu2", extension : "m4a"},
+   {type : "audio", nom : "musiqueDebut", extension : "ogg"},
+   {type : "audio", nom : "succes", extension : "ogg"},
+]
 
-loadSprite("f1", "/assets/images/f1.jpg");
-loadSprite("f2", "/assets/images/f2.jpg");
-loadSprite("f3", "/assets/images/f3.jpg");
-loadSprite("f4", "/assets/images/f4.jpg");
+function toutCharger(tab_assets){
+   tab_assets.forEach(a => {
+      if(a.type === "image"){
+         loadSprite(a.nom,`/assets/images/${a.nom}.${a.extension}`)
+      }
+      else if(a.type === "audio"){
+         loadSound(a.nom,`/assets/audio/${a.nom}.${a.extension}`)
+      }
+   })
+}
 
-loadSound("feuilles", "/assets/audio/feuilles.flac");
-
-loadSound("sonsForet", "/assets/audio/Forest_Ambience.mp3");
-loadSound("etrangeForet", "/assets/audio/etrange_foret.mp3");
-loadSound("deception1", "/assets/audio/deception1.mp3");
-loadSound("deception2", "/assets/audio/deception2.mp3");
-
-loadSound("castorDecu1", "/assets/audio/castorDecu1.m4a");
-loadSound("castorDecu2", "/assets/audio/castorDecu2.m4a");
-loadSound("castorDecu3", "/assets/audio/castorDecu3.m4a");
-
-loadSound("musiqueDebut", "/assets/audio/musiqueForet.ogg");
-loadSound("succes", "/assets/audio/succes.ogg");
+toutCharger(liste_assets)
 
 // importation du localStorage
 if (localStorage.getItem("tableauSucces") === null) {
@@ -51,6 +64,7 @@ const nombreQuestions = 8;
 
 // variables globales
 let bulle, castor, perso, texte, fond;
+let debut = true;
 
 // variables globales audio
 let langueChoisie;
@@ -89,17 +103,18 @@ scene("accueil", () => {
    }
 
    initialiserVariables();
-   let musique;
+   
    let compteur = 0;
    let titre = add([
-      text("THE SPICY INTERVIEW", { size: 50, width: width() - 230 }),
-      pos(width() / 2, 100),
+      text("THE SPICY INTERVIEW", { size: 50, width: 600 }),
       anchor("center"),
+      pos(center().x, 200)
    ]);
+
    let texte = add([
-      text("Press SpaceBar", { size: 32, width: width() - 230 }),
-      pos(width() / 2, height() / 2),
+      text("Press SpaceBar", { size: 32, width: 600 }),
       anchor("center"),
+      pos(center().x, 400)
    ]);
 
    onKeyPress("space", () => {
@@ -268,6 +283,7 @@ scene("interview", () => {
          progressionItw++;
       }
    });
+
    onKeyPress("space", () => {
       if (progressionItw == interviews.length) {
          go("bilan");
@@ -291,7 +307,7 @@ scene("interview", () => {
    });
 
    function poserQuestion() {
-      if (progressionItw == 1) {
+      if (progressionItw === 1) {
          m = play("musiqueDebut", { volume: 0.3 });
          ajouterInterfaceItw();
          recalculerJauges(
@@ -431,10 +447,14 @@ function recalculerJauges(
 ) {
    tjc = mapc(scoreConfiance, 0, scoreConfianceMax, 0, 300);
    tjp = mapc(scorePoste, 0, scorePosteMax, 0, 300);
-   tween(jaugeConfiance.width,tjc, 1, (p) => jaugeConfiance.width = p, easings.EASING_BARRES)
-   tween(jaugePoste.width,tjp, 1, (p) => jaugePoste.width = p, easings.EASING_BARRES)
-   // jaugeConfiance.width = mapc(scoreConfiance, 0, scoreConfianceMax, 0, 300);
-   // jaugePoste.width = mapc(scorePoste, 0, scorePosteMax, 0, 300);
+   if(debut){
+      jaugeConfiance.width = mapc(scoreConfiance, 0, scoreConfianceMax, 0, 300);
+      jaugePoste.width = mapc(scorePoste, 0, scorePosteMax, 0, 300);
+   }
+   else{
+      tween(jaugeConfiance.width,tjc, 1, (p) => jaugeConfiance.width = p, easings.EASING_BARRES)
+      tween(jaugePoste.width,tjp, 1, (p) => jaugePoste.width = p, easings.EASING_BARRES)
+   }
 }
 
 function ajouterInterfaceItw() {
@@ -620,3 +640,9 @@ function nettoyer(tab) {
 }
 
 go("accueil");
+
+// window.addEventListener("resize", (event) => {
+//    scaleFactor = window.innerWidth / 1280
+//    k.scale = scaleFactor
+//    console.log(k.scale)
+// });
