@@ -12,10 +12,10 @@ const liste_assets = [
    {type : "image", nom : "employe", extension : "png"},
    {type : "image", nom : "castor", extension : "png"},
    {type : "image", nom : "fond", extension : "jpg"},
-   {type : "image", nom : "f1", extension : "jpg"},
-   {type : "image", nom : "f2", extension : "jpg"},
-   {type : "image", nom : "f3", extension : "jpg"},
-   {type : "image", nom : "f4", extension : "jpg"},
+   {type : "image", nom : "fin1", extension : "jpg"},
+   {type : "image", nom : "fin2", extension : "jpg"},
+   {type : "image", nom : "fin3", extension : "jpg"},
+   {type : "image", nom : "fin4", extension : "jpg"},
    {type : "audio", nom : "feuilles", extension : "flac"},
    {type : "audio", nom : "sonsForet", extension : "mp3"},
    {type : "audio", nom : "etrangeForet", extension : "mp3"},
@@ -23,23 +23,23 @@ const liste_assets = [
    {type : "audio", nom : "deception2", extension : "mp3"},
    {type : "audio", nom : "castorDecu1", extension : "m4a"},
    {type : "audio", nom : "castorDecu2", extension : "m4a"},
-   {type : "audio", nom : "castorDecu2", extension : "m4a"},
+   {type : "audio", nom : "castorDecu3", extension : "m4a"},
    {type : "audio", nom : "musiqueDebut", extension : "ogg"},
    {type : "audio", nom : "succes", extension : "ogg"},
 ]
 
-function toutCharger(tab_assets){
+function charger_assets(chemin,tab_assets){
    tab_assets.forEach(a => {
       if(a.type === "image"){
-         loadSprite(a.nom,`/assets/images/${a.nom}.${a.extension}`)
+         loadSprite(a.nom,`${chemin}images/${a.nom}.${a.extension}`)
       }
       else if(a.type === "audio"){
-         loadSound(a.nom,`/assets/audio/${a.nom}.${a.extension}`)
+         loadSound(a.nom,`${chemin}audio/${a.nom}.${a.extension}`)
       }
    })
 }
 
-toutCharger(liste_assets)
+charger_assets("/assets/",liste_assets)
 
 // importation du localStorage
 if (localStorage.getItem("tableauSucces") === null) {
@@ -59,24 +59,21 @@ let tableauFins = localStorage.getItem("tableauFins").split(",");
 nettoyer(tableauSucces);
 nettoyer(tableauFins);
 
-// nombre de questions
+// nombre de questions par partie
 const nombreQuestions = 8;
 
 // variables globales
 let bulle, castor, perso, texte, fond;
 let debut = true;
 
-// variables globales audio
+// variables globales
 let langueChoisie;
-
 let jaugesOK;
 let jaugeConfiance, jaugePoste;
-
 let progressionItw;
 let espaceAutorise;
 let questionPasPosee;
 let nombreAutorise;
-
 let scorePoste;
 let scoreConfiance;
 
@@ -364,7 +361,7 @@ scene("succes", () => {
 scene("fin", () => {
    let compteurCloture = 0;
    let fin;
-   let nomFIn;
+   let nomFin;
 
    destroy(perso);
    destroy(fond);
