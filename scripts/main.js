@@ -1,4 +1,4 @@
-let scaleFactor = window.innerWidth / 1280;
+let scaleFactor = window.innerWidth / 1280
 
 let k = kaboom({
   background: [0, 0, 0],
