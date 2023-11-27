@@ -8,7 +8,6 @@
 
 -  localStorage
    -  comprendre pourquoi il tire les mêmes valeurs
--  fix size
 -  double musique au restart
 - optimisation GC
 
@@ -18,3 +17,8 @@
 - niveau ours
 - niveau humain
 - achievments
+
+## done
+
+- 
+- aligné le texte à droite pour le castor

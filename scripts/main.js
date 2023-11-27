@@ -26,6 +26,7 @@ const liste_assets = [
    {type : "audio", nom : "castorDecu3", extension : "m4a"},
    {type : "audio", nom : "musiqueDebut", extension : "ogg"},
    {type : "audio", nom : "succes", extension : "ogg"},
+   {type : "audio", nom : "humainContent", extension : "wav"},
 ]
 
 function charger_assets(chemin,tab_assets){
@@ -86,6 +87,8 @@ const EASING_BARRES = "easeOutCubic"
 interviews = selectionnerQuestions(nombreQuestions);
 
 scene("accueil", () => {
+   let m;
+
    if (langueChoisie == "fr") {
       textesIntroduction = textesIntroductionFR;
       rencontreCastor = rencontreCastorFR;
@@ -103,29 +106,37 @@ scene("accueil", () => {
    
    let compteur = 0;
    let titre = add([
-      text("THE SPICY INTERVIEW", { size: 50, width: 600 }),
+      text("THE SPICY INTERVIEW"),
       anchor("center"),
       pos(center().x, 200)
    ]);
 
    let texte = add([
-      text("Press SpaceBar", { size: 32, width: 600 }),
+      text("Press SpaceBar"),
       anchor("center"),
       pos(center().x, 400)
    ]);
 
    onKeyPress("space", () => {
-      if (compteur == 0) {
+      if (compteur === 0) {
          destroy(titre);
       }
       if (compteur != textesIntroduction.length) {
-         texte.text = textesIntroduction[compteur];
-         if (compteur == 0) {
+         if (compteur === 0) {
             m = play("etrangeForet");
          }
+
+         // version lourde d'un simple edit du texte
+         destroy(texte)
+         texte = add([
+            text(textesIntroduction[compteur],{width : 800, align : "center"}),
+            anchor("center"),
+            pos(center().x, 400)
+         ])
+
          compteur++;
       } else {
-         stop(m);
+         m.stop()
          go("jeu");
       }
    });
@@ -188,7 +199,7 @@ scene("jeu", () => {
       if (progression != rencontreCastor.length) {
          if (progression == 5) {
             play("feuilles");
-            shake(2);
+            shake(10);
             castor.opacity = 1;
          }
          texte.text = rencontreCastor[progression];
@@ -200,6 +211,7 @@ scene("jeu", () => {
 });
 
 scene("interview", () => {
+   let premiere_question = true;
    poserQuestion();
 
    onKeyPress("1", () => {
@@ -292,11 +304,15 @@ scene("interview", () => {
                nombreAutorise = true;
                fondHumain();
                texte.text =
-                  "[1]" +
+                  "[1] " +
                   interviews[progressionItw].rh1 +
                   "\n" +
-                  "[2]" +
+                  "[2] " +
                   interviews[progressionItw].rh2;
+               if(premiere_question === true){
+                  texte.text += "\n\n (PRESS 1 OR 2)"
+                  premiere_question = false
+               }
                fond.color.r += 2;
             }
          }
@@ -314,6 +330,7 @@ scene("interview", () => {
             scorePosteMax
          );
          jaugesOK = true;
+         debut = false
       }
       texte.text = interviews[progressionItw].q;
       espaceAutorise = true;
@@ -325,7 +342,7 @@ scene("interview", () => {
 
 // interview terminée : c'est l'heure du bilan
 scene("bilan", () => {
-   stop(m);
+   m.stop();
    let mef = play("etrangeForet");
    destroyAll("itw")
    let compteurCastor = 0;
@@ -428,12 +445,16 @@ function fondHumain() {
    bulle.color.r = 120;
    bulle.color.g = 10;
    bulle.color.b = 0;
+
+   texte.align = "left"
 }
 
 function fondCastor() {
    bulle.color.r = 139;
    bulle.color.g = 69;
    bulle.color.b = 19;
+
+   texte.align = "right"
 }
 
 function recalculerJauges(
@@ -616,6 +637,13 @@ function reactions(sc, sp) {
          speed: 2,
       });
    }
+   // if (sc > 0) {
+   //    forceFrappe += 5 * sc;
+   //    play(choose(["humainContent"]), {
+   //       volume: 6,
+   //       speed: 1,
+   //    });
+   // }
    if (sp < 0) {
       forceFrappe += 5 * sp;
       play(choose(["castorDecu1", "castorDecu2", "castorDecu3"]), {
