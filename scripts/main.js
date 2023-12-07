@@ -47,15 +47,6 @@ if (localStorage.getItem("tableauSucces") === null) {
    localStorage.setItem("tableauSucces", "");
 }
 
-/*
-// rassembler les deux tableaux
-let tout = [...tableauSucces,...tableauIndicesSuccesLS]
-// exclure les doublons
-let tableauLSMaj = Array.from(new Set(tout))
-// ajouter dans le LS
-localStorage.setItem("tableauSucces",JSON.stringify(tableauLSMaj));
-*/
-
 // stocker les valeurs dans des variables (après avoir enlevé les doublons)
 // crée un tableau
 let tableauSucces = localStorage.getItem("tableauSucces").split(",");
@@ -213,9 +204,6 @@ scene("interview", () => {
 
    onKeyPress("1", () => {
       if (nombreAutorise) {
-         // mise à jour du tableau de faits & localStorage
-         tableauSucces.push(session_interview[progressionItw].idFact);
-
          texte.text = session_interview[progressionItw].rc1;
          fondCastor();
 
@@ -249,9 +237,6 @@ scene("interview", () => {
    });
    onKeyPress("2", () => {
       if (nombreAutorise) {
-         // mise à jour du tableau de faits & localStorage
-         tableauSucces.push(session_interview[progressionItw].idFact);
-
          texte.text = session_interview[progressionItw].rc2;
          fondCastor();
 
@@ -362,6 +347,14 @@ scene("bilan", () => {
          })
       }
    });
+
+   // sauvegarde du LS
+   // rassembler les deux tableaux
+   let tout = [...tableauSucces,...tableauIndicesSuccesLS]
+   // exclure les doublons
+   let tableauLSMaj = Array.from(new Set(tout))
+   // ajouter dans le LS
+   localStorage.setItem("tableauSucces",String(tableauLSMaj));
 });
 
 scene("succes", () => {
@@ -603,7 +596,7 @@ function creerGrilleFaits() {
             text(nombreFait, { size: 20})
          ])
 
-         if (tableauSucces.includes(nombreFait)) {
+         if (tableauSucces.includes(String(nombreFait))) {
             bloc.color.r = 0;
             bloc.color.g = 255;
             bloc.color.b = 0;
