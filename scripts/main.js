@@ -8,6 +8,8 @@ let k = kaboom({
   scale : scaleFactor
 });
 
+
+
 const liste_assets = [
    {type : "image", nom : "employe", extension : "png"},
    {type : "image", nom : "castor", extension : "png"},
@@ -61,7 +63,7 @@ nettoyer(tableauSucces);
 nettoyer(tableauFins);
 
 // nombre de questions par partie
-const nombreQuestions = 8;
+const nombreQuestions = 2 // 8
 
 // variables globales
 let bulle, castor, perso, texte, fond;
@@ -83,10 +85,11 @@ const scoreConfianceMax = 10;
 
 const EASING_BARRES = "easeOutCubic"
 
-// sélectionner les questions
-interviews = selectionnerQuestions(nombreQuestions);
+
 
 scene("accueil", () => {
+   // sélectionner les questions
+   session_interview = selectionnerQuestions(nombreQuestions);
    let m;
 
    if (langueChoisie == "fr") {
@@ -98,9 +101,6 @@ scene("accueil", () => {
       localStorage.removeItem("tableauSucces");
       localStorage.removeItem("tableauFins");
    });
-
-   if (localStorage.tableauSucces != null) {
-   }
 
    initialiserVariables();
    
@@ -217,24 +217,24 @@ scene("interview", () => {
    onKeyPress("1", () => {
       if (nombreAutorise) {
          // mise à jour du tableau de faits & localStorage
-         tableauSucces.push(interviews[progressionItw].idFact);
+         tableauSucces.push(session_interview[progressionItw].idFact);
 
          localStorage.tableauSucces = String(tableauSucces);
 
-         texte.text = interviews[progressionItw].rc1;
+         texte.text = session_interview[progressionItw].rc1;
          fondCastor();
 
          espaceAutorise = true;
          questionPasPosee = true;
 
-         if (progressionItw - 1 == interviews.length) {
+         if (progressionItw - 1 == session_interview.length) {
             go("bilan");
             return;
          }
          nombreAutorise = false;
 
-         let sc = interviews[progressionItw].sc1;
-         let sp = interviews[progressionItw].sp1;
+         let sc = session_interview[progressionItw].sc1;
+         let sp = session_interview[progressionItw].sp1;
 
          reactions(sc, sp);
 
@@ -255,31 +255,31 @@ scene("interview", () => {
    onKeyPress("2", () => {
       if (nombreAutorise) {
          // mise à jour du tableau de faits & localStorage
-         tableauSucces.push(interviews[progressionItw].idFact);
+         tableauSucces.push(session_interview[progressionItw].idFact);
          localStorage.tableauSucces = String(tableauSucces);
 
-         texte.text = interviews[progressionItw].rc2;
+         texte.text = session_interview[progressionItw].rc2;
          fondCastor();
 
          espaceAutorise = true;
          questionPasPosee = true;
 
-         if (progressionItw == interviews.length) {
+         if (progressionItw == session_interview.length) {
             go("bilan");
             return;
          }
          nombreAutorise = false;
 
-         let sc = interviews[progressionItw].sc2;
-         let sp = interviews[progressionItw].sp2;
+         let sc = session_interview[progressionItw].sc2;
+         let sp = session_interview[progressionItw].sp2;
 
          reactions(sc, sp);
 
          scoreConfiance += sc;
          scorePoste += sp;
 
-         scoreConfiance += interviews[progressionItw].sc2;
-         scorePoste += interviews[progressionItw].sp2;
+         scoreConfiance += session_interview[progressionItw].sc2;
+         scorePoste += session_interview[progressionItw].sp2;
 
          if (jaugesOK) {
             recalculerJauges(
@@ -294,7 +294,7 @@ scene("interview", () => {
    });
 
    onKeyPress("space", () => {
-      if (progressionItw == interviews.length) {
+      if (progressionItw == session_interview.length) {
          go("bilan");
       } else {
          if (espaceAutorise) {
@@ -305,10 +305,10 @@ scene("interview", () => {
                fondHumain();
                texte.text =
                   "[1] " +
-                  interviews[progressionItw].rh1 +
+                  session_interview[progressionItw].rh1 +
                   "\n" +
                   "[2] " +
-                  interviews[progressionItw].rh2;
+                  session_interview[progressionItw].rh2;
                if(premiere_question === true){
                   texte.text += "\n\n (PRESS 1 OR 2)"
                   premiere_question = false
@@ -332,7 +332,7 @@ scene("interview", () => {
          jaugesOK = true;
          debut = false
       }
-      texte.text = interviews[progressionItw].q;
+      texte.text = session_interview[progressionItw].q;
       espaceAutorise = true;
       fondCastor();
       questionPasPosee = false;
@@ -342,6 +342,7 @@ scene("interview", () => {
 
 // interview terminée : c'est l'heure du bilan
 scene("bilan", () => {
+   console.log("BILAN")
    m.stop();
    let mef = play("etrangeForet");
    destroyAll("itw")
@@ -363,9 +364,10 @@ scene("bilan", () => {
          play("feuilles");
          destroy(castor);
          compteurCastor++;
-      } else {
-         stop(mef);
-         go("fin");
+         wait(1,() =>{
+            stop(mef);
+            go("fin");
+         })
       }
    });
 });
@@ -383,12 +385,6 @@ scene("fin", () => {
    destroy(perso);
    destroy(fond);
    destroy(bulle);
-
-   let texteFinal = add([
-      text("", { size: 32, width: width() - 230 }),
-      pos(width() / 2, height() / 2),
-      anchor("center"),
-   ]);
 
    if (scorePoste < scorePosteMax / 2) {
       if (scoreConfiance < scoreConfianceMax / 2) {
@@ -408,18 +404,24 @@ scene("fin", () => {
       }
    }
 
+   // version lourde d'un simple edit du texte
+   // destroy(texte)
+   texte = add([
+      text(fin[compteurCloture],{width : 800, align : "center"}),
+      anchor("center"),
+      pos(center().x, 400)
+   ])  
+   //compteurCloture++
+
    if (!tableauFins.includes(nomFin)) tableauFins.push(nomFin);
 
    localStorage.tableauFins = String(tableauFins);
 
    onKeyPress("space", () => {
-      if (compteurCloture < fin.length) {
+      if (compteurCloture < fin.length-1) {
+         compteurCloture++;
          texte.text = fin[compteurCloture];
-         compteurCloture++;
-      } else if (compteurCloture == fin.length) {
-         compteurCloture++;
-      } else if (compteurCloture == fin.length + 1) {
-         compteurCloture++;
+      } else if (compteurCloture === fin.length-1) {
          destroy(texte);
 
          play("succes");
@@ -431,11 +433,13 @@ scene("fin", () => {
          ]);
 
          let imageFinale = add([
-            sprite(`f${nomFin}`),
+            sprite(`fin${nomFin}`),
             pos(width() / 2, 400),
             anchor("center"),
          ]);
-      } else {
+         compteurCloture++;
+
+      } else{
          go("succes");
       }
    });
@@ -499,9 +503,9 @@ function ajouterInterfaceItw() {
       "jauge",
    ]);
 
-   const foiJ = add([
-      text("FAITH IN YOURSELF", { size: 28 }),
-      pos(jaugeConfiance.pos.x, jaugeConfiance.pos.y + 5),
+   const foiJ = jaugeConfiance.add([
+      text("FAITH IN YOURSELF", { size: 27, align : "center" }),
+      pos(5,7),
       z("interface"),
       stay(),
       "itw",
@@ -526,9 +530,9 @@ function ajouterInterfaceItw() {
       "jauge",
    ]);
 
-   const foiC = add([
-      text("TRUST IN APPLICANT", { size: 28 }),
-      pos(jaugePoste.pos.x, jaugePoste.pos.y + 5),
+   const foiC = jaugePoste.add([
+      text("TRUST IN APPLICANT", { size: 27, align : "center"  }),
+      pos(3,7),
       z("interface"),
       stay(),
       "itw",
@@ -537,18 +541,18 @@ function ajouterInterfaceItw() {
 
 // composer le tableau de questions
 function selectionnerQuestions(nombreQuestions) {
-   // copier le tableau
-   let tmp = interviews.slice(interviews);
-   let selectionQuestions = [];
-
-   for (let i = 0; i < nombreQuestions; i++) {
-      let index = Math.floor(Math.random() * tmp.length);
-      let removed = tmp.splice(index, 1);
-      selectionQuestions.push(removed[0]);
+   let selectionQuestions = new Set();
+   
+   while (selectionQuestions.size < nombreQuestions) {
+      let indiceAleatoire = Math.floor(Math.random() * interviews.length);
+      selectionQuestions.add(interviews[indiceAleatoire]);
    }
-   // ajouter la première question
-   selectionQuestions.unshift(questionInitiale);
-   return selectionQuestions;
+
+   // Convertir l'ensemble en tableau
+   let nouveauTableau = Array.from(selectionQuestions);
+   // ajouter la première question au tableau
+   nouveauTableau.unshift(questionInitiale);
+   return nouveauTableau;
 }
 
 function initialiserVariables() {
@@ -606,7 +610,7 @@ function creerGrilleFaits() {
          ]);
 
          bloc.add([
-            text(nombreFait, { size: 30 })
+            text(nombreFait, { size: 20})
          ])
 
          if (tableauSucces.includes(nombreFait)) {
