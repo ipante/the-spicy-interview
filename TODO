@@ -1,14 +1,8 @@
 # ROADMAP
 
-## préparation
-
-- diff ReplIt-Github
-
 ## fix
 
--  localStorage
-   -  comprendre pourquoi il tire les mêmes valeurs
--  double musique au restart
+- localStorage
 - optimisation GC
 
 ## bonus
@@ -17,8 +11,3 @@
 - niveau ours
 - niveau humain
 - achievments
-
-## done
-
-- 
-- aligné le texte à droite pour le castor

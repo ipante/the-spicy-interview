@@ -8,8 +8,6 @@ let k = kaboom({
   scale : scaleFactor
 });
 
-
-
 const liste_assets = [
    {type : "image", nom : "employe", extension : "png"},
    {type : "image", nom : "castor", extension : "png"},
@@ -49,18 +47,11 @@ if (localStorage.getItem("tableauSucces") === null) {
    localStorage.setItem("tableauSucces", "");
 }
 
-// importation du localStorage
-if (localStorage.getItem("tableauFins") === null) {
-   localStorage.setItem("tableauFins", "");
-}
-
 // stocker les valeurs dans des variables (après avoir enlevé les doublons)
 let tableauSucces = localStorage.getItem("tableauSucces").split(",");
-let tableauFins = localStorage.getItem("tableauFins").split(",");
 
 // netoyage des tableaux
 nettoyer(tableauSucces);
-nettoyer(tableauFins);
 
 // nombre de questions par partie
 const nombreQuestions = 2 // 8
@@ -79,6 +70,7 @@ let questionPasPosee;
 let nombreAutorise;
 let scorePoste;
 let scoreConfiance;
+let tableauIndicesSuccesLS = [];
 
 const scorePosteMax = 10;
 const scoreConfianceMax = 10;
@@ -99,7 +91,6 @@ scene("accueil", () => {
 
    onKeyPress("c", () => {
       localStorage.removeItem("tableauSucces");
-      localStorage.removeItem("tableauFins");
    });
 
    initialiserVariables();
@@ -193,7 +184,6 @@ scene("jeu", () => {
       z(3),
       stay(),
    ]);
-   console.log("texte", texte);
 
    onKeyPress("space", () => {
       if (progression != rencontreCastor.length) {
@@ -342,12 +332,10 @@ scene("interview", () => {
 
 // interview terminée : c'est l'heure du bilan
 scene("bilan", () => {
-   console.log("BILAN")
    m.stop();
    let mef = play("etrangeForet");
    destroyAll("itw")
    let compteurCastor = 0;
-   let compteurHumain = 0;
 
    let monologueFinal;
    scorePoste > scorePosteMax / 2 + 1
@@ -412,10 +400,6 @@ scene("fin", () => {
       pos(center().x, 400)
    ])  
    //compteurCloture++
-
-   if (!tableauFins.includes(nomFin)) tableauFins.push(nomFin);
-
-   localStorage.tableauFins = String(tableauFins);
 
    onKeyPress("space", () => {
       if (compteurCloture < fin.length-1) {
@@ -546,6 +530,8 @@ function selectionnerQuestions(nombreQuestions) {
    while (selectionQuestions.size < nombreQuestions) {
       let indiceAleatoire = Math.floor(Math.random() * interviews.length);
       selectionQuestions.add(interviews[indiceAleatoire]);
+      // ajout pour le LocalStorage
+      tableauIndicesSuccesLS.push(indiceAleatoire);
    }
 
    // Convertir l'ensemble en tableau
@@ -641,13 +627,6 @@ function reactions(sc, sp) {
          speed: 2,
       });
    }
-   // if (sc > 0) {
-   //    forceFrappe += 5 * sc;
-   //    play(choose(["humainContent"]), {
-   //       volume: 6,
-   //       speed: 1,
-   //    });
-   // }
    if (sp < 0) {
       forceFrappe += 5 * sp;
       play(choose(["castorDecu1", "castorDecu2", "castorDecu3"]), {
