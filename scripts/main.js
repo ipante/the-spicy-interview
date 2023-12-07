@@ -42,15 +42,24 @@ function charger_assets(chemin,tab_assets){
 
 charger_assets("/assets/",liste_assets)
 
-// importation du localStorage
+// importation du localStorage si existe
 if (localStorage.getItem("tableauSucces") === null) {
    localStorage.setItem("tableauSucces", "");
 }
 
-// stocker les valeurs dans des variables (après avoir enlevé les doublons)
-let tableauSucces = localStorage.getItem("tableauSucces").split(",");
+/*
+// rassembler les deux tableaux
+let tout = [...tableauSucces,...tableauIndicesSuccesLS]
+// exclure les doublons
+let tableauLSMaj = Array.from(new Set(tout))
+// ajouter dans le LS
+localStorage.setItem("tableauSucces",JSON.stringify(tableauLSMaj));
+*/
 
-// netoyage des tableaux
+// stocker les valeurs dans des variables (après avoir enlevé les doublons)
+// crée un tableau
+let tableauSucces = localStorage.getItem("tableauSucces").split(",");
+// netoyage du tableau de succès
 nettoyer(tableauSucces);
 
 // nombre de questions par partie
@@ -76,8 +85,6 @@ const scorePosteMax = 10;
 const scoreConfianceMax = 10;
 
 const EASING_BARRES = "easeOutCubic"
-
-
 
 scene("accueil", () => {
    // sélectionner les questions
@@ -209,8 +216,6 @@ scene("interview", () => {
          // mise à jour du tableau de faits & localStorage
          tableauSucces.push(session_interview[progressionItw].idFact);
 
-         localStorage.tableauSucces = String(tableauSucces);
-
          texte.text = session_interview[progressionItw].rc1;
          fondCastor();
 
@@ -246,7 +251,6 @@ scene("interview", () => {
       if (nombreAutorise) {
          // mise à jour du tableau de faits & localStorage
          tableauSucces.push(session_interview[progressionItw].idFact);
-         localStorage.tableauSucces = String(tableauSucces);
 
          texte.text = session_interview[progressionItw].rc2;
          fondCastor();
