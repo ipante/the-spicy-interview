@@ -71,6 +71,7 @@ let nombreAutorise;
 let scorePoste;
 let scoreConfiance;
 let tableauIndicesSuccesLS = [];
+let tableauLSMaj;
 
 const scorePosteMax = 10;
 const scoreConfianceMax = 10;
@@ -352,7 +353,7 @@ scene("bilan", () => {
    // rassembler les deux tableaux
    let tout = [...tableauSucces,...tableauIndicesSuccesLS]
    // exclure les doublons
-   let tableauLSMaj = Array.from(new Set(tout))
+   tableauLSMaj = Array.from(new Set(tout))
    // ajouter dans le LS
    localStorage.setItem("tableauSucces",String(tableauLSMaj));
 });
@@ -596,6 +597,7 @@ function creerGrilleFaits() {
             text(nombreFait, { size: 20})
          ])
 
+         console.log("juste avant test",tableauSucces)
          if (tableauSucces.includes(String(nombreFait))) {
             bloc.color.r = 0;
             bloc.color.g = 255;
