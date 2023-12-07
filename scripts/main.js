@@ -32,10 +32,10 @@ const liste_assets = [
 function charger_assets(chemin,tab_assets){
    tab_assets.forEach(a => {
       if(a.type === "image"){
-         loadSprite(a.nom,`${chemin}images/${a.nom}.${a.extension}`)
+         loadSprite(a.nom,`./${chemin}images/${a.nom}.${a.extension}`)
       }
       else if(a.type === "audio"){
-         loadSound(a.nom,`${chemin}audio/${a.nom}.${a.extension}`)
+         loadSound(a.nom,`./${chemin}audio/${a.nom}.${a.extension}`)
       }
    })
 }
@@ -54,7 +54,7 @@ let tableauSucces = localStorage.getItem("tableauSucces").split(",");
 nettoyer(tableauSucces);
 
 // nombre de questions par partie
-const nombreQuestions = 2 // 8
+const nombreQuestions = 7
 
 // variables globales
 let bulle, castor, perso, texte, fond;
@@ -82,6 +82,7 @@ scene("accueil", () => {
    // sélectionner les questions
    session_interview = selectionnerQuestions(nombreQuestions);
    let m;
+   let sonsForet;
 
    if (langueChoisie == "fr") {
       textesIntroduction = textesIntroductionFR;
@@ -136,7 +137,7 @@ scene("jeu", () => {
    let progression = 0;
    let progressionItw = 0;
 
-   play("sonsForet");
+   sonsForet = play("sonsForet");
 
    fond = add([
       sprite("fond"),
@@ -338,15 +339,21 @@ scene("bilan", () => {
       if (compteurCastor < monologueFinal.length) {
          texte.text = monologueFinal[compteurCastor];
          compteurCastor++;
-      } else if (compteurCastor == monologueFinal.length) {
-         play("feuilles");
-         destroy(castor);
-         compteurCastor++;
-         wait(1,() =>{
-            stop(mef);
-            go("fin");
-         })
-      }
+         if (compteurCastor === monologueFinal.length) {
+            wait(1,()=>{
+               play("feuilles");
+               destroy(castor);
+               compteurCastor++;
+               wait(2,() =>{
+                  sonsForet.stop()
+                  stop(sonsForet)
+                  mef.stop()
+                  stop(mef);
+                  go("fin");
+               })
+            })
+         }
+      } 
    });
 
    // sauvegarde du LS
@@ -647,9 +654,3 @@ function nettoyer(tab) {
 }
 
 go("accueil");
-
-// window.addEventListener("resize", (event) => {
-//    scaleFactor = window.innerWidth / 1280
-//    k.scale = scaleFactor
-//    console.log(k.scale)
-// });
